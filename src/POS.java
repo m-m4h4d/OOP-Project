@@ -163,8 +163,4 @@ public class POS extends JFrame implements ActionListener {
             inventoryArea.append(String.format("%s x%d\n", item, stock));
         }
     }
-    
-    public static void main(String[] args) {
-        new POS();
-    }
 }    
