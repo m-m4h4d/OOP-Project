@@ -3,7 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class POSSystem extends JFrame implements ActionListener {
-    private JLabel titleLabel, productLabel, priceLabel, quantityLabel, subtotalLabel, totalLabel;
+    private JLabel productLabel, priceLabel, quantityLabel, subtotalLabel, totalLabel;
     private JTextField productField, priceField, quantityField, subtotalField, totalField;
     private JButton addButton, removeButton, checkoutButton;
     private JTextArea cartArea;
@@ -12,12 +12,11 @@ public class POSSystem extends JFrame implements ActionListener {
     private double total = 0;
 
     public POSSystem() {
-        setTitle("Point of Sale System");
+        super("Point of Sale System");
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create components
-        titleLabel = new JLabel("Point of Sale System");
         productLabel = new JLabel("Product:");
         productField = new JTextField(20);
         priceLabel = new JLabel("Price:");
@@ -37,7 +36,6 @@ public class POSSystem extends JFrame implements ActionListener {
         totalField.setEditable(false);
 
         // Add components to JFrame
-        add(titleLabel);
         add(productLabel);
         add(productField);
         add(priceLabel);
