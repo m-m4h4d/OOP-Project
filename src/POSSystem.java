@@ -95,8 +95,8 @@ public class POSSystem extends JFrame implements ActionListener {
             subtotalField.setText(String.format("%.2f", subtotal));
             totalField.setText(String.format("%.2f", total));
             productField.setText("");
-            priceField.setText("");
-            quantityField.setText("");
+            priceField.setText("0");
+            quantityField.setText("0");
         } else if (e.getSource() == removeButton) {
             // Remove item from cart
             if (cart.contains(product)) {
