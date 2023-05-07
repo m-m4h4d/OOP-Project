@@ -4,14 +4,12 @@ import java.awt.event.*;
 import java.util.*;
 
 public class POS extends JFrame implements ActionListener {
-    private JTextField productField, priceField, quantityField;
+    private JTextField productField, priceField, quantityField, subtotalField, totalField;
     private JTextArea cartArea, inventoryArea;
     private double subtotal, total;
     private String cart;
     private HashMap<String, Integer> inventory;
-    private JButton addButton;
-    private JButton removeButton;
-    private JButton checkoutButton;
+    private JButton addButton, removeButton, checkoutButton;
 
     public POS() {
         super("Point of Sale System");
@@ -38,10 +36,10 @@ public class POS extends JFrame implements ActionListener {
         inventoryArea.setEditable(false);
         JScrollPane inventoryScrollPane = new JScrollPane(inventoryArea);
         JLabel subtotalLabel = new JLabel("Subtotal:");
-        JTextField subtotalField = new JTextField(8);
+        subtotalField = new JTextField(8);
         subtotalField.setEditable(false);
         JLabel totalLabel = new JLabel("Total:");
-        JTextField totalField = new JTextField(8);
+        totalField = new JTextField(8);
         totalField.setEditable(false);
 
         // Set up main window layout
@@ -50,10 +48,10 @@ public class POS extends JFrame implements ActionListener {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(3, 2));
         inputPanel.add(productLabel);
-        inputPanel.add(productField);
         inputPanel.add(priceLabel);
-        inputPanel.add(priceField);
         inputPanel.add(quantityLabel);
+        inputPanel.add(productField);
+        inputPanel.add(priceField);
         inputPanel.add(quantityField);
         inputPanel.add(addButton);
         inputPanel.add(removeButton);
@@ -107,7 +105,10 @@ public class POS extends JFrame implements ActionListener {
                     inventory.put(item, stock - quantity);
                     double price = Double.parseDouble(priceField.getText());
                     subtotal += price * quantity;
-                    cart += String.format("%s x%d $%.2f\n", item, quantity, price);
+                    total = subtotal * 1.06;  // 6% sales tax
+                    cart += String.format("%s\tx%d\t$%.2f\n", item, quantity, price);
+                    subtotalField.setText(String.format("%.2f", subtotal));
+                    totalField.setText(String.format("%.2f", total));
                     cartArea.setText(cart);
                     updateInventory();
                 } else {
@@ -141,7 +142,6 @@ public class POS extends JFrame implements ActionListener {
             quantityField.setText("");
         } else if (e.getSource() == checkoutButton) {
             // Calculate total and print receipt
-            total = subtotal * 1.06;  // 6% sales tax
             String receipt = String.format("Subtotal: $%.2f\n", subtotal)
                     + String.format("Tax: $%.2f\n", total - subtotal)
                     + String.format("Total: $%.2f\n", total);
