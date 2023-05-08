@@ -89,7 +89,7 @@ public class POS extends JFrame implements ActionListener {
         updateInventory();
 
         // Set up window
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();
         setVisible(true);
     }

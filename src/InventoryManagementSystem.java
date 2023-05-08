@@ -12,7 +12,7 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
     public InventoryManagementSystem() {
         setTitle("Inventory Management System");
         setLayout(new FlowLayout());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Create components
         titleLabel = new JLabel("Inventory Management System");
