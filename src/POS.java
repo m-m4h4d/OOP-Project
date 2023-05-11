@@ -94,14 +94,18 @@ public class POS extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == addButton) {
+    public void actionPerformed(ActionEvent e)
+    {
+        if (e.getSource() == addButton)
+        {
             // Add item to cart and update totals
             String item = productField.getText();
             int quantity = Integer.parseInt(quantityField.getText());
-            if (inventory.containsKey(item)) {
+            if (inventory.containsKey(item))
+            {
                 int stock = inventory.get(item);
-                if (quantity <= stock) {
+                if (quantity <= stock)
+                {
                     inventory.put(item, stock - quantity);
                     double price = Double.parseDouble(priceField.getText());
                     subtotal += price * quantity;
@@ -153,7 +157,7 @@ public class POS extends JFrame implements ActionListener {
             updateInventory();
         }
     }
-    
+
     private void updateInventory() {
         // Update inventory display
         inventoryArea.setText("");
@@ -163,4 +167,4 @@ public class POS extends JFrame implements ActionListener {
             inventoryArea.append(String.format("%s x%d\n", item, stock));
         }
     }
-}    
+}
