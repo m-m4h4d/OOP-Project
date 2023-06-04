@@ -87,12 +87,12 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
 
     public void removeInventory(String name)
     {
-        int rowNumber = -1;
+        int rowNumber = 0;
         try {
             BufferedReader reader = new BufferedReader(new FileReader("data.csv"));
             String string;
             while ((string = reader.readLine()) != null) {
-                if (name.equals(string.substring(0, 5)))
+                if (string.indexOf(name) >= 0)
                     break;
                 rowNumber++;
             }

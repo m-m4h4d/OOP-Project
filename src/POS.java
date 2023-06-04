@@ -1,14 +1,17 @@
 import javax.swing.*;
+
+import com.opencsv.CSVReader;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileReader;
 import java.util.*;
 
 public class POS extends JFrame implements ActionListener {
     private JTextField productField, priceField, quantityField, subtotalField, totalField;
     private JTextArea cartArea, inventoryArea;
     private double subtotal, total;
-    private String cart;
-    private HashMap<String, Integer> inventory;
+    private String cart, inventory;
     private JButton addButton, removeButton, checkoutButton;
 
     public POS() {
@@ -17,6 +20,7 @@ public class POS extends JFrame implements ActionListener {
         // Set up GUI components
         JLabel productLabel = new JLabel("Product:");
         productField = new JTextField(20);
+        //priceField.setEditable(false);
         JLabel priceLabel = new JLabel("Price:");
         priceField = new JTextField(5);
         JLabel quantityLabel = new JLabel("Quantity:");
@@ -78,12 +82,6 @@ public class POS extends JFrame implements ActionListener {
 
         // Initialize cart and inventory
         cart = "";
-        inventory = new HashMap<String, Integer>();
-        inventory.put("Item A", 10);
-        inventory.put("Item B", 20);
-        inventory.put("Item C", 30);
-        inventory.put("Item D", 40);
-        inventory.put("Item E", 50);
 
         // Update inventory display
         updateInventory();
@@ -94,6 +92,25 @@ public class POS extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    public void startInventory(String file)
+    {
+        try {
+            // create csvReader object
+            CSVReader csvReader = new CSVReader(new FileReader(file));
+            String[] data;
+
+            // print Data
+            while ((data = csvReader.readNext()) != null) {
+                inventory += data[0] + ":\t\tx" + data[1] + "\tRs. " + data[2] + "\n";
+                inventoryArea.setText(inventory);
+            }
+            csvReader.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void actionPerformed(ActionEvent e)
     {
         if (e.getSource() == addButton)
@@ -101,7 +118,7 @@ public class POS extends JFrame implements ActionListener {
             // Add item to cart and update totals
             String item = productField.getText();
             int quantity = Integer.parseInt(quantityField.getText());
-            if (inventory.containsKey(item))
+            if (inventory.indexOf(item) >= 0)
             {
                 int stock = inventory.get(item);
                 if (quantity <= stock)
@@ -110,7 +127,7 @@ public class POS extends JFrame implements ActionListener {
                     double price = Double.parseDouble(priceField.getText());
                     subtotal += price * quantity;
                     total = subtotal * 1.06;  // 6% sales tax
-                    cart += String.format("%s\tx%d\t$%.2f\n", item, quantity, price);
+                    cart += String.format("%s\tx%d\tRs. %.2f\n", item, quantity, price);
                     subtotalField.setText(String.format("%.2f", subtotal));
                     totalField.setText(String.format("%.2f", total));
                     cartArea.setText(cart);
@@ -146,9 +163,9 @@ public class POS extends JFrame implements ActionListener {
             quantityField.setText("");
         } else if (e.getSource() == checkoutButton) {
             // Calculate total and print receipt
-            String receipt = String.format("Subtotal: $%.2f\n", subtotal)
-                    + String.format("Tax: $%.2f\n", total - subtotal)
-                    + String.format("Total: $%.2f\n", total);
+            String receipt = String.format("Subtotal: Rs. %.2f\n", subtotal)
+                    + String.format("Tax: Rs. %.2f\n", total - subtotal)
+                    + String.format("Total: Rs. %.2f\n", total);
             JOptionPane.showMessageDialog(this, receipt);
             cart = "";
             cartArea.setText(cart);
