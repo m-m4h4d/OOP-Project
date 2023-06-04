@@ -1,17 +1,14 @@
 import javax.swing.*;
-
-import com.opencsv.CSVReader;
-
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileReader;
 import java.util.*;
 
 public class POS extends JFrame implements ActionListener {
     private JTextField productField, priceField, quantityField, subtotalField, totalField;
     private JTextArea cartArea, inventoryArea;
     private double subtotal, total;
-    private String cart, inventory;
+    private String cart;
+    private HashMap<String, Integer> inventory;
     private JButton addButton, removeButton, checkoutButton;
 
     public POS() {
@@ -82,6 +79,12 @@ public class POS extends JFrame implements ActionListener {
 
         // Initialize cart and inventory
         cart = "";
+        inventory = new HashMap<String, Integer>();
+        inventory.put("Item A", 10);
+        inventory.put("Item B", 20);
+        inventory.put("Item C", 30);
+        inventory.put("Item D", 40);
+        inventory.put("Item E", 50);
 
         // Update inventory display
         updateInventory();
@@ -92,25 +95,6 @@ public class POS extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    public void startInventory(String file)
-    {
-        try {
-            // create csvReader object
-            CSVReader csvReader = new CSVReader(new FileReader(file));
-            String[] data;
-
-            // print Data
-            while ((data = csvReader.readNext()) != null) {
-                inventory += data[0] + ":\t\tx" + data[1] + "\tRs. " + data[2] + "\n";
-                inventoryArea.setText(inventory);
-            }
-            csvReader.close();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void actionPerformed(ActionEvent e)
     {
         if (e.getSource() == addButton)
@@ -118,7 +102,7 @@ public class POS extends JFrame implements ActionListener {
             // Add item to cart and update totals
             String item = productField.getText();
             int quantity = Integer.parseInt(quantityField.getText());
-            if (inventory.indexOf(item) >= 0)
+            if (inventory.containsKey(item))
             {
                 int stock = inventory.get(item);
                 if (quantity <= stock)
