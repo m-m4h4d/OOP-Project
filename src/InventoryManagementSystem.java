@@ -1,3 +1,4 @@
+import java.util.List;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -46,10 +47,10 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        readAllDataAtOnce("data.csv");
+        startInventory("data.csv");
     }
 
-    public void writeDataLineByLine(String[] data)
+    public void updateInventory(String[] data)
     {
         try {
             // create CSVWriter object filewriter object as parameter
@@ -65,10 +66,10 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
         }
     }
 
-    public void readAllDataAtOnce(String file)
+    public void startInventory(String file)
     {
         try {
-            // create csvReader object and skip first Line
+            // create csvReader object
             CSVReader csvReader = new CSVReader(new FileReader(file));
             String[] data;
 
@@ -77,7 +78,36 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
                 inventory += data[0] + ":\t\tx" + data[1] + "\tRs. " + data[2] + "\n";
                 inventoryArea.setText(inventory);
             }
-            
+            csvReader.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeInventory(String name)
+    {
+        int rowNumber = -1;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("data.csv"));
+            String string;
+            while ((string = reader.readLine()) != null) {
+                if (name.equals(string.substring(0, 5)))
+                    break;
+                rowNumber++;
+            }
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            CSVReader reader2 = new CSVReader(new FileReader("data.csv"));
+            List<String[]> allElements = reader2.readAll();
+            allElements.remove(rowNumber);
+            FileWriter sw = new FileWriter("data.csv");
+            CSVWriter writer = new CSVWriter(sw);
+            writer.writeAll(allElements);
+            writer.close();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -91,23 +121,24 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
         int quantity = 0;
         int price = 0;
 
-        // Check if quantity is a valid integer
-        try {
-            quantity = Integer.parseInt(quantityString);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Quantity must be an integer.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Check if price is a valid integer
-        try {
-            price = Integer.parseInt(priceString);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Price must be an integer.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         if (e.getSource() == addButton) {
+
+            // Check if quantity is a valid integer
+            try {
+                quantity = Integer.parseInt(quantityString);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Quantity must be an integer.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Check if price is a valid integer
+            try {
+                price = Integer.parseInt(priceString);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Price must be an integer.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             // Add item to inventory
             inventory += name + ":\t\tx" + quantity + "\tRs. " + price + "\n";
             inventoryArea.setText(inventory);
@@ -115,7 +146,7 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
             quantityField.setText("");
             priceField.setText("");
             String[] data = {name, Integer.toString(quantity), Integer.toString(price)};
-            writeDataLineByLine(data);
+            updateInventory(data);
         } else if (e.getSource() == removeButton) {
             // Remove item from inventory
             if (inventory.contains(name)) {
@@ -123,8 +154,10 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
                 int endOfLine = inventory.indexOf("\n", index);
                 inventory = inventory.substring(0, index) + inventory.substring(endOfLine + 1);
                 inventoryArea.setText(inventory);
+                removeInventory(name);
                 nameField.setText("");
                 quantityField.setText("");
+                priceField.setText("");
             } else {
                 JOptionPane.showMessageDialog(this, "Item not found in inventory.", "Error", JOptionPane.ERROR_MESSAGE);
             }
