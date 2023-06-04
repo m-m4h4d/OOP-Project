@@ -47,32 +47,21 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
         writeDataLineByLine("data.csv");
     }
 
-    public void writeDataLineByLine(String filePath)
+    public void writeDataLineByLine(String filePath, String[] data)
     {
         // first create file object for file placed at location
         // specified by filepath
         File file = new File(filePath);
         try {
-            // create FileWriter object with file as parameter
-            FileWriter outputfile = new FileWriter(file);
-
             // create CSVWriter object filewriter object as parameter
-            CSVWriter writer = new CSVWriter(outputfile);
-
-            // adding header to csv
-            String[] header = {"Item", "Quantity", "Price"};
-            writer.writeNext(header);
+            CSVWriter writer = new CSVWriter(new FileWriter(file, true));
 
             // add data to csv
-            String[] data1 = { "Aman", "10", "620" };
-            writer.writeNext(data1);
-            String[] data2 = { "Suraj", "10", "630" };
-            writer.writeNext(data2);
+            writer.writeNext(data);
 
             // closing writer connection
             writer.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
