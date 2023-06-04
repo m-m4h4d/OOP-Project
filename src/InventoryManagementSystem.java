@@ -44,7 +44,6 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        writeDataLineByLine("data.csv");
     }
 
     public void writeDataLineByLine(String filePath, String[] data)
