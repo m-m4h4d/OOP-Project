@@ -51,12 +51,9 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
 
     public void writeDataLineByLine(String[] data)
     {
-        // first create file object for file placed at location
-        // specified by filepath
-        File file = new File("data.csv");
         try {
             // create CSVWriter object filewriter object as parameter
-            CSVWriter writer = new CSVWriter(new FileWriter(file, true));
+            CSVWriter writer = new CSVWriter(new FileWriter("data.csv", true));
 
             // add data to csv
             writer.writeNext(data);
@@ -77,7 +74,8 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
 
             // print Data
             while ((data = csvReader.readNext()) != null) {
-                inventoryArea.setText(data[0] + ":\tx" + data[1] + "\tRs. " + data[2] + "\n\n");
+                inventory += data[0] + ":\t\tx" + data[1] + "\tRs. " + data[2] + "\n";
+                inventoryArea.setText(inventory);
             }
             
         }
@@ -111,10 +109,11 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
 
         if (e.getSource() == addButton) {
             // Add item to inventory
-            inventory += name + ":\tx" + quantity + "\tRs. " + price + "\n";
+            inventory += name + ":\t\tx" + quantity + "\tRs. " + price + "\n";
             inventoryArea.setText(inventory);
             nameField.setText("");
             quantityField.setText("");
+            priceField.setText("");
             String[] data = {name, Integer.toString(quantity), Integer.toString(price)};
             writeDataLineByLine(data);
         } else if (e.getSource() == removeButton) {
