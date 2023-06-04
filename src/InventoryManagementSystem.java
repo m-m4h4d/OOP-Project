@@ -5,8 +5,8 @@ import javax.swing.*;
 import com.opencsv.*;
 
 public class InventoryManagementSystem extends JFrame implements ActionListener {
-    private JLabel titleLabel, nameLabel, quantityLabel;
-    private JTextField nameField, quantityField;
+    private JLabel nameLabel, quantityLabel, priceLabel;
+    private JTextField nameField, quantityField, priceField;
     private JButton addButton, removeButton;
     private JTextArea inventoryArea;
     private String inventory = "";
@@ -17,22 +17,24 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Create components
-        titleLabel = new JLabel("Inventory Management System");
         nameLabel = new JLabel("Name:");
         nameField = new JTextField(20);
         quantityLabel = new JLabel("Quantity:");
         quantityField = new JTextField(10);
+        priceLabel = new JLabel("Price:");
+        priceField = new JTextField(20);
         addButton = new JButton("Add to Inventory");
         removeButton = new JButton("Remove from Inventory");
         inventoryArea = new JTextArea(10, 30);
         inventoryArea.setEditable(false);
 
         // Add components to JFrame
-        add(titleLabel);
         add(nameLabel);
         add(nameField);
         add(quantityLabel);
         add(quantityField);
+        add(priceLabel);
+        add(priceField);
         add(addButton);
         add(removeButton);
         add(inventoryArea);
@@ -44,13 +46,14 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+        readAllDataAtOnce("data.csv");
     }
 
-    public void writeDataLineByLine(String filePath, String[] data)
+    public void writeDataLineByLine(String[] data)
     {
         // first create file object for file placed at location
         // specified by filepath
-        File file = new File(filePath);
+        File file = new File("data.csv");
         try {
             // create CSVWriter object filewriter object as parameter
             CSVWriter writer = new CSVWriter(new FileWriter(file, true));
@@ -65,10 +68,30 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
         }
     }
 
+    public void readAllDataAtOnce(String file)
+    {
+        try {
+            // create csvReader object and skip first Line
+            CSVReader csvReader = new CSVReader(new FileReader(file));
+            String[] data;
+
+            // print Data
+            while ((data = csvReader.readNext()) != null) {
+                inventoryArea.setText(data[0] + ":\tx" + data[1] + "\tRs. " + data[2] + "\n\n");
+            }
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void actionPerformed(ActionEvent e) {
         String name = nameField.getText();
         String quantityString = quantityField.getText();
+        String priceString = priceField.getText();
         int quantity = 0;
+        int price = 0;
 
         // Check if quantity is a valid integer
         try {
@@ -78,12 +101,22 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
             return;
         }
 
+        // Check if price is a valid integer
+        try {
+            price = Integer.parseInt(priceString);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Price must be an integer.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         if (e.getSource() == addButton) {
             // Add item to inventory
-            inventory += name + ": " + quantity + "\n";
+            inventory += name + ":\tx" + quantity + "\tRs. " + price + "\n";
             inventoryArea.setText(inventory);
             nameField.setText("");
             quantityField.setText("");
+            String[] data = {name, Integer.toString(quantity), Integer.toString(price)};
+            writeDataLineByLine(data);
         } else if (e.getSource() == removeButton) {
             // Remove item from inventory
             if (inventory.contains(name)) {
