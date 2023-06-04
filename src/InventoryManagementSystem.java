@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import javax.swing.*;
+import com.opencsv.*;
 
 public class InventoryManagementSystem extends JFrame implements ActionListener {
     private JLabel titleLabel, nameLabel, quantityLabel;
@@ -42,6 +44,37 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+        writeDataLineByLine("data.csv");
+    }
+
+    public void writeDataLineByLine(String filePath)
+    {
+        // first create file object for file placed at location
+        // specified by filepath
+        File file = new File(filePath);
+        try {
+            // create FileWriter object with file as parameter
+            FileWriter outputfile = new FileWriter(file);
+
+            // create CSVWriter object filewriter object as parameter
+            CSVWriter writer = new CSVWriter(outputfile);
+
+            // adding header to csv
+            String[] header = {"Item", "Quantity", "Price"};
+            writer.writeNext(header);
+
+            // add data to csv
+            String[] data1 = { "Aman", "10", "620" };
+            writer.writeNext(data1);
+            String[] data2 = { "Suraj", "10", "630" };
+            writer.writeNext(data2);
+
+            // closing writer connection
+            writer.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void actionPerformed(ActionEvent e) {
