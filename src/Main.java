@@ -8,6 +8,7 @@ public class Main extends JFrame implements ActionListener
     public Main()
     {
         super("Super Soft");
+        // Calling all constructors
         setLayout(new FlowLayout());
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
