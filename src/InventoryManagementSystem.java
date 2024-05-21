@@ -101,13 +101,14 @@ public class InventoryManagementSystem extends JFrame implements ActionListener 
             e.printStackTrace();
         }
         try {
-            CSVReader reader2 = new CSVReader(new FileReader("data.csv"));
-            List<String[]> allElements = reader2.readAll();
-            allElements.remove(rowNumber);
-            FileWriter sw = new FileWriter("data.csv");
-            CSVWriter writer = new CSVWriter(sw);
-            writer.writeAll(allElements);
-            writer.close();
+            try (CSVReader reader2 = new CSVReader(new FileReader("data.csv"))) {
+                List<String[]> allElements = reader2.readAll();
+                allElements.remove(rowNumber);
+                FileWriter sw = new FileWriter("data.csv");
+                CSVWriter writer = new CSVWriter(sw);
+                writer.writeAll(allElements);
+                writer.close();
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
